@@ -121,7 +121,7 @@ const map = (sentence) => {
 };
 
 m.mount(document.body, {
-  view: (vnode) => [
+  view: (vnode) => div.container([
     h1("Satzwerft"),
     table(
       tr(
@@ -202,5 +202,5 @@ m.mount(document.body, {
       },
       themes.map((t, i) => option({ value: i, selected: i == theme }, t.name))
     ),
-  ],
+  ],)
 });
