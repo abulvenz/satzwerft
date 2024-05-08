@@ -107,11 +107,11 @@ const map = (sentence) => {
     .toLowerCase()
     .replace(/[^a-z ]/, "")
     .split(" ");
-  const result = parts
+  let result = parts
     .map((part) => (categories.includes(part) ? sentence[part] : part))
     .join(" ");
-  if (result.length > 0) result[0] = result[0].toUpperCase();
-  return result + ".";
+  if (result.length > 0) result = result.charAt(0).toUpperCase() + result.slice(1) + ".";
+  return result;
 };
 
 m.mount(document.body, {
