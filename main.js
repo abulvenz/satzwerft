@@ -108,99 +108,94 @@ const map = (sentence) => {
     .replace(/[^a-z ]/, "")
     .split(" ");
   const result = parts
-    .map((part) => {
-      if (categories.includes(part)) {
-        return sentence[part];
-      } else {
-        return part;
-      }
-    })
+    .map((part) => (categories.includes(part) ? sentence[part] : part))
     .join(" ");
-  result[0] = result[0].toUpperCase();
+  if (result.length > 0) result[0] = result[0].toUpperCase();
   return result + ".";
 };
 
 m.mount(document.body, {
-  view: (vnode) => div.container([
-    h1("Satzwerft"),
-    table(
-      tr(
-        th(),
-        categories.map((cat) => th(cat))
-      ),
-      state.frags.map((frag) =>
-        tr([
-          td(
-            button(
-              {
-                onclick: () => {
-                  state.frags = state.frags.filter((f) => f !== frag);
-                },
-              },
-              "×"
-            )
-          ),
-          categories.map((cat) =>
-            td(
-                input({
-                value: frag[cat],
-                oninput: (e) => (frag[cat]= e.target.value),
-                })
-            ),
-        )
-        ])
-      )
-    ),
-    button({ onclick: () => state.frags.push({}) }, "Neue Zeile"),
-    button(
-      {
-        onclick: () => {
-          localStorage.setItem("satzwerft", JSON.stringify(state.frags));
-          localStorage.setItem("satzwerft_", JSON.stringify(state.sentences));
-        },
-      },
-      "Speichern"
-    ),
-    hr(),
-    "Satzbau: ",
-    input({
-      value: state.pattern,
-      oninput: (e) => (state.pattern = e.target.value),
-    }),
-    button({ onclick: () => shakeit() }, "Schütteln"),
-    hr(),
-
-    table(
-      state.sentences.map((sentence) =>
+  view: (vnode) =>
+    div.container([
+      h1("Satzwerft"),
+      table(
         tr(
-          td(
-            button(
-              {
-                onclick: () => {
-                  state.sentences = state.sentences.filter(
-                    (s) => s !== sentence
-                  );
+          th(),
+          categories.map((cat) => th(cat))
+        ),
+        state.frags.map((frag) =>
+          tr([
+            td(
+              button(
+                {
+                  onclick: () => {
+                    state.frags = state.frags.filter((f) => f !== frag);
+                  },
                 },
-              },
-              "×"
-            )
-          ),
-          td(span(map(sentence)))
+                "×"
+              )
+            ),
+            categories.map((cat) =>
+              td(
+                input({
+                  value: frag[cat],
+                  oninput: (e) => (frag[cat] = e.target.value),
+                })
+              )
+            ),
+          ])
         )
-      )
-    ),
-
-    hr(),
-
-    select(
-      {
-        onchange: (e) => {
-          theme = e.target.value;
-          localStorage.setItem("theme", theme);
-          m.redraw();
+      ),
+      button({ onclick: () => state.frags.push({}) }, "Neue Zeile"),
+      button(
+        {
+          onclick: () => {
+            localStorage.setItem("satzwerft", JSON.stringify(state.frags));
+            localStorage.setItem("satzwerft_", JSON.stringify(state.sentences));
+          },
         },
-      },
-      themes.map((t, i) => option({ value: i, selected: i == theme }, t.name))
-    ),
-  ],)
+        "Speichern"
+      ),
+      hr(),
+      "Satzbau: ",
+      input({
+        value: state.pattern,
+        oninput: (e) => (state.pattern = e.target.value),
+      }),
+      button({ onclick: () => shakeit() }, "Schütteln"),
+      hr(),
+
+      table(
+        state.sentences.map((sentence) =>
+          tr(
+            td(
+              button(
+                {
+                  onclick: () => {
+                    state.sentences = state.sentences.filter(
+                      (s) => s !== sentence
+                    );
+                  },
+                },
+                "×"
+              )
+            ),
+            td(span(map(sentence)))
+          )
+        )
+      ),
+
+      hr(),
+
+      select(
+        {
+          onchange: (e) => {
+            theme = e.target.value;
+            localStorage.setItem("theme", theme);
+            m.redraw();
+          },
+        },
+        themes.map((t, i) => option({ value: i, selected: i == theme }, t.name))
+      ),
+    ]),
 });
